@@ -38,6 +38,10 @@
 	font-size: 25px;
 	color: white;
 }
+.modal-no-access a{
+	text-decoration: underline;
+	color: white;
+}
 .modal-no-access input{
 	border-radius: 5px;
 	padding: 7px 20px;
