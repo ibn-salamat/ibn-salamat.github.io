@@ -3,7 +3,10 @@ let closeModalNoAccess = document.querySelector('.modal-no-access-close');
 let modalNoAccess = document.querySelector('.modal-no-access-wrap');
 
 links.forEach((link) => {
-	link.addEventListener('click', () => {
+
+
+	link.addEventListener('click', (event) => {
+		event.preventDefault()
 		modalNoAccess.classList.add('active');
 	})
 })

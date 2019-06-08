@@ -97,7 +97,35 @@
 	font-size: 16px;
 }
 .my-like-buttons button{
-	font-size: 24px;
+	font-size: 15px;
+	padding: 5px 10px;
+}
+.my-task-send{
+	background: var(--light)
+}
+.my-task-send h4{
+	font-weight: 600;
+}
+.my-task-send p{
+	line-height: 1.5em;
+}
+.my-task-send-form{
+	background: var(--light);
+}
+.my-task-send-form .my-form-wrap{
+	background: white;
+	border-top: 3px solid #1572e8
+}
+.my-task-send-form h4{
+	font-weight: 600;
+}
+.my-task-send-form .buttons{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.my-task-send-form .my-send-button{
+	background: #1572e8 !important;
 }
 /* Media */
 @media(max-width:640px){
