@@ -5,13 +5,15 @@ section.first{
     height: 100vh;
     min-height: 640px;
     max-height: 1400px;
+    display: flex;
+    flex-direction: column;
 }
 .main-header{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 240px;
+    min-height: 150px;
     padding: 50px 0;
 }
 
@@ -21,7 +23,7 @@ section.first{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 60%;
+    flex-grow: 1;
     background-color: #f03838;
     color: #fff;
 }
@@ -57,7 +59,6 @@ section.first{
 .header-menu{
     list-style: none;
     display: flex;
-    flex-direction: column;
     justify-content: space-around;
     align-items: center;
 }
