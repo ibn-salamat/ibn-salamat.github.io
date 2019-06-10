@@ -118,10 +118,10 @@ prevBtn.addEventListener('click', () => {
     parentFeedbacks.removeChild(del)
     parentFeedbacks.insertAdjacentElement('afterbegin', del)
 
-    parentFeedbacks.querySelectorAll('.feedback')[0].style.cssText = ' transform: scale(1.1);  opacity: 1;'
+    parentFeedbacks.querySelectorAll('.feedback')[0].style.cssText = ' transform: scale(1.1);  opacity: 0;'
 
     setTimeout(() => {
-        parentFeedbacks.querySelectorAll('.feedback')[0].style.cssText = ' transform: scale(1);  opacity: 0;'
+        parentFeedbacks.querySelectorAll('.feedback')[0].style.cssText = ' transform: scale(1);  opacity: 1;'
     },300)
 
 })
