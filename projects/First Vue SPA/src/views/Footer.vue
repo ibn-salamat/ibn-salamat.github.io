@@ -19,6 +19,9 @@ footer{
 	justify-content:center;
 	background: #2e3131;
 }
+p{
+	color:white;
+}
 h1{
 	text-align: center;
 }

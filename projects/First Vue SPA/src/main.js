@@ -27,6 +27,9 @@ let router = new VueRouter({
 	]
 })
 
+router.replace({ path: '*', redirect: '/' })
+export default router
+
 new Vue({
   el: '#app',
   router: router,
