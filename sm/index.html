@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="./assets/logo.png" />
+
+    <title>Smartkassa</title>
+    <link rel="stylesheet" href="./styles.css" type="text/css" />
+    <!-- Required Core stylesheet -->
+    <link
+      rel="stylesheet"
+      href="glide.core.min.css"
+    />
+
+    <!-- Optional Theme stylesheet -->
+    <link
+      rel="stylesheet"
+      href="glide.theme.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Comfortaa&display=swap"
+      rel="stylesheet"
+    /><script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script  src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide"></script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class App extends React.Component {
+        constructor(props) {
+          super(props);
+          this.DOMSwiper = React.createRef();
+          this.preimuwestva = React.createRef();
+          this.actionsRef = React.createRef();
+          this.footerRef = React.createRef();
+          this.kassaRef = React.createRef();
+          this.questionRef = React.createRef();
+          this.state = {
+            shown: {},
+            name: "",
+            phone: "",
+            phoneTop: "",
+            footerRes: false,
+            topRes: false,
+            errorPhoneTop: false,
+            errorFooter: false,
+            currentImage: 0
+          };
+        }
+
+        toggleExpdand(panelNumber) {
+          this.setState({
+            shown: {
+              ...this.state.shown,
+              [panelNumber]: !this.state.shown[panelNumber]
+            }
+          });
+        }
+
+        sendTop = async () => {
+          const { phoneTop } = this.state;
+          if (phoneTop) {
+            this.setState({ errorPhoneTop: false });
+
+            if (phoneTop.length >= 10) {
+              const rawResponse = await fetch(
+                "https://smartkassa.kz/api/contacts/v1",
+                {
+                  method: "POST",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ phone: phoneTop })
+                }
+              );
+              const content = await rawResponse.json();
+              if (content.success) {
+                this.setState({ topRes: true, phoneTop: "" }, () => {
+                  setTimeout(() => {
+                    this.setState({ topRes: false });
+                  }, 5000);
+                });
+              }
+            }
+          } else this.setState({ errorPhoneTop: true });
+        };
+
+        sendFooter = async () => {
+          const { name, phone } = this.state;
+          if (name && phone) {
+            this.setState({ errorFooter: false });
+            if (phone.length >= 10) {
+              const rawResponse = await fetch(
+                "https://smartkassa.kz/api/contacts/v1",
+                {
+                  method: "POST",
+                  headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ name: name, phone: phone })
+                }
+              );
+              const content = await rawResponse.json();
+              if (content.success) {
+                this.setState({ footerRes: true, name: "", phone: "" }, () => {
+                  setTimeout(() => {
+                    this.setState({ footerRes: false });
+                  }, 5000);
+                });
+              }
+            }
+          } else this.setState({ errorFooter: true });
+        };
+
+        handleChange = ({ target: { name, value } }) => {
+          this.setState(
+            prevState => ({ [name]: value }),
+            () =>
+              this.setState(prevState => 
+              
+            prevState.name && prevState.phone 
+                  && { errorFooter: false }
+                
+              )
+          );
+        };
+
+        calcScroll = () => {
+          const preimuwestva = Number(
+            this.preimuwestva.current.offsetTop - 400
+          );
+          const kassa = Number(this.kassaRef.current.offsetTop - 400);
+          const actions = Number(this.actionsRef.current.offsetTop - 500);
+          const questions = Number(this.questionRef.current.offsetTop - 500);
+          const scrollPos = window.scrollY;
+          if (scrollPos >= 0) {
+            document
+              .getElementById("intro-wrapper1")
+              .classList.add("apperanceIntro");
+          }
+          if (scrollPos >= preimuwestva) {
+            document
+              .getElementById("preimuwestva-wrapper1")
+              .classList.add("apperanceSection");
+          }
+          if (scrollPos >= kassa) {
+            document
+              .getElementById("work-to-kassa-wrapper1")
+              .classList.add("apperanceKassa");
+          }
+          if (scrollPos >= actions) {
+            document
+              .getElementById("swiper__wrapper1")
+              .classList.add("apperanceActions");
+          }
+          if (scrollPos >= questions) {
+            document
+              .getElementById("question-wrapper1")
+              .classList.add("apperanceQuestion");
+          }
+        };
+
+        scrollToMyRef = () =>
+          window.scrollTo(0, Number(this.preimuwestva.current.offsetTop - 100));
+        scrollToSwiper = () =>
+          window.scrollTo(0, Number(this.actionsRef.current.offsetTop - 100));
+        scrollToFooter = () =>
+          window.scrollTo(0, Number(this.footerRef.current.offsetTop - 100));
+
+        componentDidMount() {
+          window.addEventListener("scroll", this.calcScroll);
+          window.scrollTo(0, 1);
+          setInterval(() => {
+            this.setState({ currentImage: 0 }, () =>
+              setTimeout(() => {
+                this.setState({ currentImage: 1 });
+              }, 5000)
+            );
+          }, 10000);
+
+          new Glide(this.DOMSwiper.current, {
+            slidesToShow: 1,
+            dots: "#dots",
+            draggable: true,
+            arrows: {
+              prev: ".glide__arrow glide__arrow--left",
+              next: ".glide__arrow glide__arrow--right"
+            }
+          }).mount();
+        }
+
+        componentWillUnmount() {
+          window.removeEventListener("scroll", this.calcScroll);
+        }
+
+        render() {
+          const {
+            shown,
+            name,
+            phone,
+            phoneTop,
+            footerRes,
+            topRes,
+            errorPhoneTop,
+            errorFooter,
+            currentImage
+          } = this.state;
+          const images = {
+            top: {
+              left: ["./assets/top-left.png", "./assets/top-left-2.png"],
+              center: ["./assets/top-center.png", "./assets/top-center-2.png"],
+              right: ["./assets/top-right.png", "./assets/top-right-2.png"]
+            },
+            bottom: {
+              left: ["./assets/bottom-left.png", "./assets/bottom-left-2.png"],
+              center: [
+                "./assets/bottom-center.png",
+                "./assets/bottom-center-2.png"
+              ],
+              right: [
+                "./assets/bottom-right.png",
+                "./assets/bottom-right-2.png"
+              ]
+            }
+          };
+          return (
+            <div>
+              <div className="header-wrapper">
+                <a href="https://smartkassa.kz">
+                  <img className="logo" src="./assets/logo.png" />
+                </a>
+                <div className="right-part-wrapper">
+                  <button
+                    onClick={this.scrollToMyRef}
+                    className="header-button-link"
+                  >
+                    Преимущества
+                  </button>
+                  <button
+                    className="header-button-link"
+                    onClick={this.scrollToSwiper}
+                  >
+                    Акции
+                  </button>
+                  <button
+                    className="header-button-link"
+                    onClick={this.scrollToFooter}
+                  >
+                    Контакты
+                  </button>
+                  <a
+                    href="https://smartkassa.kz/admin/"
+                    className="header-button-personal"
+                  >
+                    Личный кабинет
+                  </a>
+                </div>
+              </div>
+
+              <div id="intro-wrapper1" className="intro-wrapper">
+                <div className="img-back-into">
+                  <img
+                    className="intro-left-image"
+                    src="./assets/image-back.png"
+                  />
+                </div>
+                <div className="intro-right-wrapper">
+                  <div className="first-block-title">
+                    <h1 className="intro-right-title">Полное управление</h1>
+                    <h1 className="intro-right-title">вашим бизнесом</h1>
+                  </div>
+                  <div className="second-block-title">
+                    <h1 className="intro-right-title">Все необходимое за</h1>
+                    <h1 className="intro-right-title">5000 тенге в месяц</h1>
+                  </div>
+                  <button className="right-block__button">купить сейчас</button>
+
+                  <p className="right-block__subtitle">
+                    Бесплатная консультация
+                  </p>
+                  <div className="right-block__textfield">
+                    <input
+                      className="textfield__input"
+                      placeholder="Введите телефон"
+                      onChange={this.handleChange}
+                      name="phoneTop"
+                      value={phoneTop}
+                      type="number"
+                    />
+                    <button
+                      onClick={this.sendTop}
+                      className="textfield__button"
+                    >
+                      Заказать
+                    </button>
+                  </div>
+                  {topRes && (
+                    <p className="res-text top-res">
+                      С вами свяжутся в ближайшее время!
+                    </p>
+                  )}
+                
+                  {phoneTop && phoneTop.length <= 10 && (
+                    <p className="res-text top-res red">
+                      Длина телефона должна быть не менее 11 цифр!
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="wrapper-first-title">
+                <h1 className="main-title">Все для успеха вашего бизнеса</h1>
+              </div>
+
+              <div className="rectangle-image-wrapper">
+                <div className="top-image-wrapper">
+                  <img
+                    className="bottom-image-src"
+                    src={images.top.left[currentImage]}
+                  />
+                </div>
+                <div className="top-image-wrapper">
+                  <img
+                    className="bottom-image-src"
+                    src={images.top.center[currentImage]}
+                  />
+                </div>
+                <div className="top-image-wrapper">
+                  <img
+                    className="bottom-image-src"
+                    src={images.top.right[currentImage]}
+                  />
+                </div>
+              </div>
+
+              <div
+                id="preimuwestva-wrapper1"
+                className="preimuwestva-wrapper"
+                ref={this.preimuwestva}
+              >
+                <div className="preimuwestva-wrapper__title-block">
+                  <h1 className="preimuwestva-wrapper__title">
+                    Наши преимущества
+                  </h1>
+                </div>
+
+                <div className="row--preimuwestva">
+                  <div className="col">
+                    <div className="tabs">
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck1"
+                        />
+                        <label className="tab-label" htmlFor="chck1">
+                          С минимальным оборудованием{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur, adipisicing
+                          elit. Ipsum, reiciendis!
+                        </div>
+                      </div>
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck2"
+                        />
+                        <label className="tab-label" htmlFor="chck2">
+                          Без кассовой книги{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. A, in!
+                        </div>
+                      </div>
+
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck3"
+                        />
+                        <label className="tab-label" htmlFor="chck3">
+                          Доступ из любой точки{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. A, in!
+                        </div>
+                      </div>
+
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck4"
+                        />
+                        <label className="tab-label" htmlFor="chck4">
+                          Режим покупки{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. A, in!
+                        </div>
+                      </div>
+
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck5"
+                        />
+                        <label className="tab-label" htmlFor="chck5">
+                          Бесплатная реклама{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. A, in!
+                        </div>
+                      </div>
+
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck6"
+                        />
+                        <label className="tab-label" htmlFor="chck6">
+                          Автоматизация работы{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. A, in!
+                        </div>
+                      </div>
+
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck7"
+                        />
+                        <label className="tab-label" htmlFor="chck7">
+                          Беспроводное соединение с принтерами{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. A, in!
+                        </div>
+                      </div>
+
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck8"
+                        />
+                        <label className="tab-label" htmlFor="chck8">
+                          Защита от проверок{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. A, in!
+                        </div>
+                      </div>
+
+                      <div className="tab">
+                        <input
+                          className="expand-input"
+                          type="checkbox"
+                          id="chck9"
+                        />
+                        <label className="tab-label" htmlFor="chck9">
+                          Поддержка прайс-листов{" "}
+                        </label>
+                        <div className="tab-content">
+                          Lorem ipsum dolor sit amet consectetur adipisicing
+                          elit. A, in!
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="preimuwestva-wrapper__first-block">
+                  <div className="first-block__content1">
+                    <div className="nested-content">
+                      <h3 className="content__title">
+                        Доступ из любой точки мира
+                      </h3>
+                      <p className="content__description">
+                        Для полноценной работы вам понадобятся лишь
+                        android-устройство, сканер штрих-кода, принтер и доступ
+                        в интернет
+                      </p>
+                    </div>
+                  </div>
+                  <div className="first-block__content2">
+                    <div className="nested-content">
+                      <h3 className="content__title">
+                        С минимальным оборудованием
+                      </h3>
+                      <p className="content__description">
+                        Для полноценной работы вам понадобятся лишь
+                        android-устройство, сканер штрих-кода, принтер и доступ
+                        в интернет
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    id="first-block__content3"
+                    className="first-block__content3"
+                  >
+                    <div className="nested-content">
+                      <h3 className="content__title">Без кассовой книги</h3>
+                      <p className="content__description">
+                        Благодаря обновленному налоговому кодексу, теперь вы
+                        можете обойтись без налоговых книг. Вся информация
+                        хранится в вашем электронном аккаунте Smartkassa
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="preimuwestva-wrapper__second-block">
+                  <div className="second-block__content1">
+                    <div className="nested-content">
+                      <h3 className="content__title">Автоматизация работы</h3>
+                      <p className="content__description">
+                        Автоматическое закрытие смены в указанное время.
+                        Отправка Z-отчета на email при автоматическом закрытии
+                        смены. Автоматическое изъятие наличных в кассе при
+                        закрытии смены
+                      </p>
+                    </div>
+                  </div>
+                  <div className="second-block__content2">
+                    <div className="nested-content">
+                      <h3 className="content__title">
+                        Беспроводное соединение с принтерами
+                      </h3>
+                      <p className="content__description">
+                        Подключение принтера по Bluetooth. Обратите внимание,
+                        что подключаемый принтер должен иметь функцию Bluetooth
+                      </p>
+                    </div>
+                  </div>
+                  <div className="second-block__content3">
+                    <div className="nested-content">
+                      <h3 className="content__title">Режим покупки</h3>
+                      <p className="content__description">
+                        Вы можете использовать Smartkassa также и при покупке
+                        какого-либо товара. И для этого не нужно приобретать
+                        никаких дополнений
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="preimuwestva-wrapper__third-block">
+                  <div className="third-block__content1">
+                    <div className="nested-content bottomNested">
+                      <h3 className="content__title">Бесплатная реклама</h3>
+                      <p className="content__description">
+                        На каждом вашем чеке Smartkassa напечатает ваш логотип,
+                        контакты и другую необходимую вам информацию
+                      </p>
+                    </div>
+                  </div>
+                  <div className="third-block__content2">
+                    <div className="nested-content bottomNested">
+                      <h3 className="content__title">Защита от проверок</h3>
+                      <p className="content__description">
+                        Тематическая проверка не проводится в отношении
+                        контрольно-кассовой машины, обеспечивающей передачу
+                        сведений о денежных расчетах в оперативном режиме в
+                        налоговые органы по сетям телекоммуникаций общего
+                        пользования. (пп 13, ст.142 Налогового кодекса РК)
+                      </p>
+                    </div>
+                  </div>
+                  <div className="third-block__content3">
+                    <div className="nested-content bottomNested">
+                      <h3 className="content__title">
+                        Поддерживает прайс-листы
+                      </h3>
+                      <p className="content__description">
+                        Для ускорения обслуживания клиентов, чтобы не вводить
+                        каждый раз наименование товара или услуги, вы можете
+                        использовать готовую номенклатуру товаров и подключать
+                        любые сканеры штрих-кодов.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="work-wrapper__title-block">
+                  <h1 className="preimuwestva-wrapper__title">
+                    Как начать работу со Smartkassa
+                  </h1>
+                </div>
+              </div>
+              <div
+                ref={this.kassaRef}
+                id="work-to-kassa-wrapper1"
+                className="work-to-kassa-wrapper"
+              >
+                <div className="work-to-kassa-wrapper__blocks ">
+                  <div className="work-to-kassa-wrapper__block">
+                    <img
+                      className="work-to-kassa__img"
+                      src="./assets/center-left.png"
+                    />
+                    <h1 className="work-to-kassa-title-img">Покупка онлайн</h1>
+                  </div>
+
+                  <div className="img-arrow-wrapper">
+                    <img
+                      className="work-to-kassa__arrow"
+                      src={"./assets/arrow-right.png"}
+                    />
+                  </div>
+
+                  <div className="work-to-kassa-wrapper__block">
+                    <img
+                      className="work-to-kassa__img"
+                      src="./assets/center-center.png"
+                    />
+                    <h1 className="work-to-kassa-title-img">
+                      Консультация и{`\n`}регистрация кассы{`\n`}в ОФД и КГД
+                    </h1>
+                  </div>
+                  <div className="img-arrow-wrapper">
+                    <img
+                      className="work-to-kassa__arrow"
+                      src={"./assets/arrow-right.png"}
+                    />
+                  </div>
+                  <div className="work-to-kassa-wrapper__block">
+                    <img
+                      className="work-to-kassa__img"
+                      src="./assets/center-right.png"
+                    />
+                    <h1 className="work-to-kassa-title-img">Первые клиенты</h1>
+                  </div>
+                </div>
+                <div className="table-wrapper">
+                  <div className="work__table">
+                    <div className="table__column">
+                      <p className="table__description">&nbsp;</p>
+                      <p className="table__description">Касса</p>
+                      <p className="table__description">
+                        Тех. обслуживание (ЦТО)
+                      </p>
+                      <p className="table__description">POS</p>
+                      <p className="table__description">Учет товаров (ERP)</p>
+                      <p className="table__description">Итого</p>
+                    </div>
+                    <div className="table__column">
+                      <p className="table__description">Smartkassa</p>
+                      <p className="table__description">5000 тенге в месяц</p>
+                      <p className="table__description">0 тенге</p>
+                      <p className="table__description">0 тенге</p>
+                      <p className="table__description">0 тенге</p>
+                      <p className="table__description">5000 тенге</p>
+                    </div>
+
+                    <div className="table__column">
+                      <p className="table__description">Физическая касса</p>
+                      <p className="table__description">от 60 000 тенге</p>
+                      <p className="table__description">от 12 000 тенге</p>
+                      <p className="table__description">от 100 000 тенге</p>
+                      <p className="table__description">от 60 000 тенге</p>
+                      <p className="table__description">от 232 000 тенге</p>
+                    </div>
+                  </div>
+                  <div className="blank-wrapper">
+                    <div className="blank_border">&nbsp;</div>
+                    <div className="blank_border">&nbsp;</div>
+                  </div>
+                </div>
+
+                <div className="prices-wrapper__title-block">
+                  <h1 className="preimuwestva-wrapper__title">
+                    Наши текущие акции
+                  </h1>
+                </div>
+              </div>
+
+              <div
+                id="swiper__wrapper1"
+                className="swiper__wrapper"
+                ref={this.actionsRef}
+              >
+                <div className="blank_border-top-slider">&nbsp;</div>
+                <div className="swiper__main">
+                  <div className="glide" ref={this.DOMSwiper}>
+                    <div className="glide__arrows" data-glide-el="controls">
+                      <button
+                        className="glide__arrow glide__arrow--left"
+                        data-glide-dir="<"
+                      >
+                        {"<"}
+                      </button>
+                      <button
+                        className="glide__arrow glide__arrow--right"
+                        data-glide-dir=">"
+                      >
+                        {">"}
+                      </button>
+                    </div>
+
+                    <div className="glide__track" data-glide-el="track">
+                      <ul className="glide__slides">
+                        <li className="glide__slide slide">
+                          <img
+                            className="image_slider"
+                            src="./assets/swiper-slide.jpg"
+                          />
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="blank-wrapper-slider">
+                  <div className="blank_border-slider">&nbsp;</div>
+                  <div className="blank_border-slider">&nbsp;</div>
+                </div>
+
+                <div className="swiper-wrapper__title-block">
+                  <h1 className="preimuwestva-wrapper__title long-wrap">
+                    Ответы на часто задаваемые вопросы
+                  </h1>
+                </div>
+              </div>
+
+              <div
+                id="question-wrapper1"
+                ref={this.questionRef}
+                className="question-wrapper"
+              >
+                <div className="question-border-wrapper">
+                  <div className="row">
+                    <div className="col">
+                      <div className="tabs">
+                        <div className="tab">
+                          <input
+                            className="expand-input"
+                            type="checkbox"
+                            id="chck10"
+                          />
+                          <label className="tab-label" htmlFor="chck10">
+                            Сколько стоит Smartkassa?{" "}
+                          </label>
+                          <div className="tab-content">
+                            Lorem ipsum dolor sit amet consectetur, adipisicing
+                            elit. Ipsum, reiciendis!
+                          </div>
+                        </div>
+                        <div className="tab">
+                          <input
+                            className="expand-input"
+                            type="checkbox"
+                            id="chck11"
+                          />
+                          <label className="tab-label" htmlFor="chck11">
+                            Что делать если сломался сканер?{" "}
+                          </label>
+                          <div className="tab-content">
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. A, in!
+                          </div>
+                        </div>
+
+                        <div className="tab">
+                          <input
+                            className="expand-input"
+                            type="checkbox"
+                            id="chck12"
+                          />
+                          <label className="tab-label" htmlFor="chck12">
+                            Как долго продлятся ваши акции?{" "}
+                          </label>
+                          <div className="tab-content">
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. A, in!
+                          </div>
+                        </div>
+
+                        <div className="tab">
+                          <input
+                            className="expand-input"
+                            type="checkbox"
+                            id="chck13"
+                          />
+                          <label className="tab-label" htmlFor="chck13">
+                            Дает ли Smartkassa сканер и принтер в аренду?{" "}
+                          </label>
+                          <div className="tab-content">
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. A, in!
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bottom-image-wrapper">
+                <div className="bottom-image">
+                  <img
+                    className="bottom-image-src"
+                    src={images.bottom.left[currentImage]}
+                  />
+                </div>
+
+                <div className="bottom-image">
+                  <img
+                    className="bottom-image-src"
+                    src={images.bottom.center[currentImage]}
+                  />
+                </div>
+
+                <div className="bottom-image1">
+                  <img
+                    className="bottom-image-src"
+                    src={images.bottom.right[currentImage]}
+                  />
+                </div>
+              </div>
+
+              <footer ref={this.footerRef} className="footer">
+                <div className="footer-wrapper">
+                  <h1 className="footer-title">
+                    Принимаются заказы на бесплатную установку
+                  </h1>
+                  <h1 className="footer-title">
+                    Закажите обратный звонок и узнайте подробности!
+                  </h1>
+                  <div className="footer-columns">
+                    <div className="left-column">
+                      <div className="textfield_footer">
+                        <label className="footer-label"> Имя</label>
+                        <input
+                          className="input-footer"
+                          onChange={this.handleChange}
+                          name="name"
+                          value={name}
+                        />
+                      </div>
+
+                      <div className="textfield_footer">
+                        <label className="footer-label">Номер телефона</label>
+                        <input
+                          onChange={this.handleChange}
+                          name="phone"
+                          value={phone}
+                          className="input-footer"
+                          type="number"
+                        />
+                        {footerRes && (
+                          <p className="res-text">
+                            С вами свяжутся в ближайшее время!
+                          </p>
+                        )}
+                        {errorFooter && (
+                          <p className="res-text top-res red">
+                            Пожалуйста, заполните все необходимые поля
+                          </p>
+                        )}
+                        {phone && phone.length <= 10 && (
+                          <p className="res-text top-res red">
+                            Длина телефона должна быть не менее 11 цифр!
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        onClick={this.sendFooter}
+                        className="footer-button"
+                      >
+                        позвоните мне
+                      </button>
+                    </div>
+
+                    <div className="right-column">
+                      <h1 className="right-column__title">
+                        или свяжитесь с нами{`\n`}
+                      </h1>
+                      <a className="phone" href="tel:+77273218948">+7 (727) 971 57 16{`\n`}</a>
+                      <a className="phone" href="tel:+77089715716">+7 (708) 971 57 16{`\n`}</a>
+                      <a className="phone" href="mailto:sk@smtu.kz">email: sk@smtu.kz</a>
+
+                      </div>
+                  </div>
+                </div>
+              </footer>
+            </div>
+          );
+        }
+      }
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
