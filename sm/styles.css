@@ -635,7 +635,6 @@ button {
 .slide {
   background: #39b54a;
   display: flex;
-  height: max-content;
 }
 
 .red {
@@ -1357,5 +1356,8 @@ button {
   }
   .textfield__input {
     margin-left: 0;
+  }
+  .slider {
+    height: 320px !important;
   }
 }
