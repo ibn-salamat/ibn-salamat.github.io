@@ -635,6 +635,7 @@ button {
 .slide {
   background: #39b54a;
   display: flex;
+  height: max-content;
 }
 
 .red {
