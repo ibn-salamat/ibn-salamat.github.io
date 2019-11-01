@@ -620,7 +620,7 @@ button {
 .image_slider {
   margin: 0 auto;
   object-fit: contain;
-  width: 85%;
+  width: 95%;
   max-width: 100%;
 }
 
@@ -1357,7 +1357,7 @@ button {
   .textfield__input {
     margin-left: 0;
   }
-  .slider {
-    height: 320px !important;
+  .slide {
+    height: 240px !important;
   }
 }
