@@ -3,8 +3,8 @@ let productsSliderWrap = document.querySelector(".slider-content");
 let productsData = {
   contents: [
     {
-      miniImg: "../../imgs/team/1.jpg",
-      fullImg: "../../imgs/team/1.jpg",
+      miniImg: "../../aristid.kz/imgs/team/1.jpg",
+      fullImg: "../../aristid.kz/imgs/team/1.jpg",
       position: "BOSS",
       name: {
         firstName: "Aidar",
@@ -14,8 +14,8 @@ let productsData = {
        осуществляющая управление бизнес-процессами планирования, подготовки, проведения и документирования заседаний Коллегиальных органов организации `
     },
     {
-      miniImg: "../../imgs/team/1.jpg",
-      fullImg: "../../imgs/team/1.jpg",
+      miniImg: "../../aristid.kz/imgs/team/1.jpg",
+      fullImg: "../../aristid.kz/imgs/team/1.jpg",
       position: "BOSS",
       name: {
         firstName: "Aidar",
@@ -25,8 +25,8 @@ let productsData = {
        осуществляющая управление бизнес-процессами планирования, подготовки, проведения и документирования заседаний Коллегиальных органов организации `
     },
     {
-      miniImg: "../../imgs/team/1.jpg",
-      fullImg: "../../imgs/team/1.jpg",
+      miniImg: "../../aristid.kz/imgs/team/1.jpg",
+      fullImg: "../../aristid.kz/imgs/team/1.jpg",
       position: "BOSS",
       name: {
         firstName: "Aidar",
@@ -36,8 +36,8 @@ let productsData = {
        осуществляющая управление бизнес-процессами планирования, подготовки, проведения и документирования заседаний Коллегиальных органов организации `
     },
     {
-      miniImg: "../../imgs/team/1.jpg",
-      fullImg: "../../imgs/team/1.jpg",
+      miniImg: "../../aristid.kz/imgs/team/1.jpg",
+      fullImg: "../../aristid.kz/imgs/team/1.jpg",
       position: "BOSS",
       name: {
         firstName: "Aidar",
@@ -47,8 +47,8 @@ let productsData = {
        осуществляющая управление бизнес-процессами планирования, подготовки, проведения и документирования заседаний Коллегиальных органов организации `
     },
     {
-      miniImg: "../../imgs/team/1.jpg",
-      fullImg: "../../imgs/team/1.jpg",
+      miniImg:"../../aristid.kz/imgs/team/1.jpg",
+      fullImg:"../../aristid.kz/imgs/team/1.jpg",
       position: "BOSS",
       name: {
         firstName: "Aidar",
