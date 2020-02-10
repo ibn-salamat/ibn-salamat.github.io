@@ -238,7 +238,7 @@ p.telephone::before {
   display: flex;
   justify-content: center;
   margin: 0 auto;
-  margin-top: 20px;
+  margin-bottom: 40px;
   max-width: 900px;
 }
 .about-statistic-blocks .block {
