@@ -1,4 +1,4 @@
-# Software Engineer from Almaty
+# Software Engineer from Atyrau
 
 Contact me: <a mailto="n.salamatoff@gmail.com">n.salamatoff@gmail.com</a>
 
