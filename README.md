@@ -1,6 +1,6 @@
 # Software Engineer from Atyrau
 
-Contact me: <a mailto="n.salamatoff@gmail.com">n.salamatoff@gmail.com</a>
+Contact me: <a href="mailto:n.salamatoff@gmail.com">n.salamatoff@gmail.com</a>
 
 GitHub: <a href="https://github.com/ibn-salamat" target="_blank">github.com/ibn-salamat</a>
 <br/><br/><br/>
